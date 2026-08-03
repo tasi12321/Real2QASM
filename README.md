@@ -11,6 +11,18 @@ $ mkdir unrolled_cx_u3; cd unrolled_cx_u3
 $ for real in ${REAL2QASM}/source/*.real; do python ${REAL2QASM}/main.py --basis-gates cx,u3 ${real}; done
 ```
 
+To preserve reversible gates and emit only `x`, `cx`, and `ccx`, use the
+special `ccx,cx,x` basis:
+
+```bash
+$ mkdir unrolled_ccx_cx_x; cd unrolled_ccx_cx_x
+$ for real in ${REAL2QASM}/source/*.real; do python ${REAL2QASM}/main.py --basis-gates ccx,cx,x ${real}; done
+```
+
+Multi-controlled X gates with more than two controls use clean ancilla qubits.
+The converter allocates one reusable pool sized for the largest gate in the
+input circuit and returns every ancilla to `|0>` after each decomposition.
+
 ## Usage
 
 ```

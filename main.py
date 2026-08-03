@@ -37,7 +37,9 @@ parser.add_argument('REAL', type=str,
 parser.add_argument('-o', '--output', metavar='QASM', type=str, default=None,
                     help='Output file (.qasm format)')
 parser.add_argument('--basis-gates', metavar='BASIS_GATES', type=str, default=None,
-                    help='List of basis gate names pass to Qiskit transpiler for unrolling (e.g., cx,u3). If empty, do not unroll.')
+                    help='List of basis gate names pass to Qiskit transpiler for unrolling (e.g., cx,u3). '
+                         'The special basis ccx,cx,x decomposes multi-controlled X gates with clean ancillas. '
+                         'If empty, do not unroll.')
 parser.add_argument('--show-input-circuit', action='store_true',
                     help='Display the input quantum circuit.')
 parser.add_argument('--show-output-circuit', action='store_true',
@@ -48,6 +50,7 @@ real_file = args.REAL
 circ_name = os.path.basename(real_file).split('.real')[0]
 qasm_file = circ_name + '.qasm' if args.output is None else args.output
 basis_gates = args.basis_gates.split(',') if args.basis_gates is not None else None
+mct_basis = basis_gates is not None and len(basis_gates) == 3 and set(basis_gates) == {'ccx', 'cx', 'x'}
 
 print('Arguments:')
 print('  - Input file:  {}'.format(real_file))
@@ -78,7 +81,12 @@ with open(real_file, 'r') as f:
   gates = [line.rstrip() for line in content if line[0] != '.']
   print('  - numgates:\t{}'.format(len(gates)))
 
-circ = qk.QuantumCircuit(numbits)
+max_numctrl = max([int(g.split(' ')[0][1:]) - 1 for g in gates], default=0)
+num_ancillas = max(max_numctrl - 2, 0) if mct_basis else 0
+circ = qk.QuantumCircuit(numbits + num_ancillas)
+
+if num_ancillas > 0:
+  print('  - ancillas:\t{} (reused and returned to |0>)'.format(num_ancillas))
 
 print('\nConverting...', end=' ')
 for idx, g in enumerate(gates):
@@ -95,6 +103,18 @@ for idx, g in enumerate(gates):
     circ.cx(ctr_bits[0], tar_bit)
   elif numctrl == 2:
     circ.ccx(ctr_bits[0], ctr_bits[1], tar_bit)
+  elif mct_basis:
+    ancillas = list(range(numbits, numbits + numctrl - 2))
+
+    circ.ccx(ctr_bits[0], ctr_bits[1], ancillas[0])
+    for ctrl_idx in range(2, numctrl - 1):
+      circ.ccx(ctr_bits[ctrl_idx], ancillas[ctrl_idx - 2], ancillas[ctrl_idx - 1])
+
+    circ.ccx(ctr_bits[-1], ancillas[-1], tar_bit)
+
+    for ctrl_idx in reversed(range(2, numctrl - 1)):
+      circ.ccx(ctr_bits[ctrl_idx], ancillas[ctrl_idx - 2], ancillas[ctrl_idx - 1])
+    circ.ccx(ctr_bits[0], ctr_bits[1], ancillas[0])
   else:
     circ.mcx(ctr_bits, tar_bit)
 print('done.')
@@ -104,7 +124,7 @@ if args.show_input_circuit:
   print(circ.draw())
   print()
 
-if basis_gates is not None:
+if basis_gates is not None and not mct_basis:
   print('Unrolling...', end=' ')
   circ = qk.transpile(circ, basis_gates=basis_gates, optimization_level=0)
   print('done.')
@@ -126,4 +146,3 @@ except AttributeError:
 with open(qasm_file, 'w') as f:
     f.write(qasm_str)
 print('done.')
-
