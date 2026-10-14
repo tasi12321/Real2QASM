@@ -1,0 +1,120 @@
+# Original gates unchanged; reverse only gates targeting input lines.
+# Function-result lines are never controls, so their values survive uncomputation.
+# All input lines are restored. The original .garbage metadata conflicts with result labels; this derivative marks all lines useful.
+.version 1.0
+.numvars 10
+.variables f2 f1 f0 x6 x5 x4 x3 x2 x1 x0
+.inputs 0 0 0 x6 x5 x4 x3 x2 x1 x0
+.outputs f2 f1 f0 x6 x5 x4 x3 x2 x1 x0
+.constants 000-------
+.garbage ----------
+.begin
+t1 x4
+t5 x1 x2 x4 x5 f1
+t1 x6
+t6 x0 x2 x4 x5 x6 f1
+t6 x2 x3 x4 x5 x6 f2
+t7 x0 x1 x3 x4 x5 x6 f0
+t7 x0 x1 x3 x4 x5 x6 f1
+t1 x6
+t1 x0
+t4 x0 x1 x5 f1
+t6 x0 x2 x3 x4 x6 f2
+t5 x0 x2 x3 x6 f2
+t5 x0 x1 x2 x4 f1
+t1 x0
+t1 x5
+t6 x0 x1 x3 x4 x5 f0
+t6 x0 x1 x3 x4 x5 f1
+t1 x0
+t7 x0 x1 x2 x3 x5 x6 f0
+t7 x0 x1 x2 x3 x5 x6 f2
+t4 x0 x4 x5 f2
+t1 x4
+t1 x6
+t6 x0 x3 x4 x5 x6 f1
+t1 x0
+t1 x5
+t1 x1
+t5 x0 x1 x3 x4 f0
+t5 x0 x1 x3 x4 f2
+t7 x0 x1 x3 x4 x5 x6 f0
+t7 x0 x1 x2 x3 x5 x6 f1
+t7 x0 x1 x2 x3 x5 x6 f2
+t1 x5
+t5 x1 x2 x4 x5 f2
+t1 x0
+t7 x0 x1 x2 x3 x5 x6 f0
+t7 x0 x1 x2 x3 x5 x6 f1
+t7 x0 x1 x2 x3 x5 x6 f2
+t1 x5
+t1 x0
+t1 x1
+t1 x3
+t3 x0 x3 f0
+t5 x1 x3 x4 x5 f1
+t5 x1 x3 x4 x5 f2
+t6 x0 x3 x4 x5 x6 f1
+t4 x0 x1 x3 f1
+t4 x0 x1 x3 f2
+t1 x1
+t1 x0
+t4 x0 x3 x5 f2
+t1 x5
+t7 x0 x1 x3 x4 x5 x6 f0
+t7 x0 x1 x3 x4 x5 x6 f1
+t1 x6
+t1 x4
+t7 x0 x1 x3 x4 x5 x6 f0
+t6 x0 x3 x4 x5 x6 f0
+t1 x5
+t1 x0
+t4 x1 x3 x4 f2
+t1 x4
+t1 x2
+t6 x0 x2 x3 x4 x6 f2
+t6 x0 x2 x3 x5 x6 f0
+t5 x0 x1 x2 x4 f2
+t6 x0 x1 x2 x3 x5 f0
+t1 x6
+t7 x0 x1 x2 x3 x5 x6 f1
+t1 x4
+t1 x5
+t6 x2 x3 x4 x5 x6 f2
+t1 x0
+t6 x0 x2 x4 x5 x6 f1
+t7 x0 x1 x2 x3 x5 x6 f1
+t7 x0 x1 x2 x3 x5 x6 f2
+# Restore input lines without changing the function-result lines.
+t1 x0
+t1 x5
+t1 x4
+t1 x6
+t1 x2
+t1 x4
+t1 x0
+t1 x5
+t1 x4
+t1 x6
+t1 x5
+t1 x0
+t1 x1
+t1 x3
+t1 x1
+t1 x0
+t1 x5
+t1 x0
+t1 x5
+t1 x1
+t1 x5
+t1 x0
+t1 x6
+t1 x4
+t1 x0
+t1 x5
+t1 x0
+t1 x0
+t1 x6
+t1 x6
+t1 x4
+.end
